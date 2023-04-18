@@ -1,3 +1,3 @@
 # MLOps-Code-Samples
 
-print(int) 
+Implication of strategies, techniques and methods of MLOps by definition and code samples.
