@@ -1,0 +1,42 @@
+# Model Monitoring in MLOps refers to the process of continuously observing and evaluating the performance and behavior of machine learning models in production environments. It involves collecting and analyzing data on various aspects of the model's performance, such as accuracy, speed, resource utilization, and data drift.
+
+# The main objective of model monitoring is to identify any issues that may affect the model's performance or its ability to generate accurate predictions. By monitoring the model, teams can identify issues early on, make timely adjustments, and prevent any negative impact on the model's performance or the overall business.
+
+# In addition to monitoring the model's performance, model monitoring also involves monitoring the underlying data to ensure that the model is still relevant and accurate. This includes monitoring for data drift, which is when the distribution of the input data changes over time, potentially leading to inaccurate predictions.
+
+# Model monitoring is an essential component of MLOps, enabling teams to maintain high levels of performance and reliability of their machine learning models in production environments.
+
+# Here's a simple code sample for model monitoring in MLOps using Python and scikit-learn:
+# Import necessary libraries
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score
+import time
+
+# Load the Iris dataset
+iris = load_iris()
+X, y = iris.data, iris.target
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Train a decision tree classifier on the training data
+clf = DecisionTreeClassifier(random_state=42)
+clf.fit(X_train, y_train)
+
+# Define a function to monitor the model's performance over time
+def monitor_model(clf, X_test, y_test):
+    start_time = time.time()
+    y_pred = clf.predict(X_test)
+    end_time = time.time()
+    latency = end_time - start_time
+    accuracy = accuracy_score(y_test, y_pred)
+    print(f"Latency: {latency}, Accuracy: {accuracy}")
+
+# Monitor the model's performance on the test data
+monitor_model(clf, X_test, y_test)
+
+# In this code sample, we first load the Iris dataset and split it into training and testing sets. We then train a decision tree classifier on the training data and define a function monitor_model to monitor the model's performance over time. This function takes the trained model, the test data, and the true labels as inputs and outputs the latency and accuracy of the model's predictions.
+
+# Finally, we call the monitor_model function on the trained model and the test data to monitor the model's performance. This code can be integrated into a larger MLOps pipeline to continuously monitor the performance of machine learning models in production environments.
