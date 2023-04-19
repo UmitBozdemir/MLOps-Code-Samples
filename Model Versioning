@@ -1,0 +1,37 @@
+# Model versioning in MLOps refers to the practice of creating and maintaining multiple versions of machine learning models over time. This is done to track changes made to the model, improve reproducibility, facilitate collaboration, and enable comparisons between different versions of the same model.
+
+# In the context of MLOps, model versioning involves creating a repository of all the models that have been developed, along with their associated code, data, and metadata. Each version of the model is assigned a unique identifier, such as a version number or a Git commit hash, that can be used to track changes and identify the specific version of the model that was used in a particular experiment or deployment.
+
+# Model versioning can also involve documenting the changes made to the model, including any hyperparameter tuning, changes to the data pre-processing pipeline, and modifications to the training process. This documentation can help ensure that the model is reproducible, even if the original developers are no longer available.
+
+# Overall, model versioning is a critical component of MLOps that helps ensure the reliability, reproducibility, and collaboration of machine learning models over time.
+
+# Here's a code sample demonstrating model versioning in MLOps using Git:
+# Initialize a new Git repository to track the model versions
+git init
+
+# Add the model code and data to the repository
+git add model.py data.csv
+
+# Commit the initial version of the model
+git commit -m "Initial version of the model"
+
+# Train a new version of the model with different hyperparameters
+python train.py --lr 0.001 --batch_size 32
+git add model.py
+git commit -m "Updated model with different hyperparameters"
+
+# Make a bug fix to the model code
+git add model.py
+git commit -m "Fixed bug in model code"
+
+# Deploy the latest version of the model to production
+git tag production
+
+# In this code sample, we first initialize a new Git repository to track the model versions. We then add the initial version of the model code and data to the repository and commit it with a descriptive message.
+
+# Next, we train a new version of the model with different hyperparameters and update the model code accordingly. We add the updated model code to the repository and commit it with another descriptive message.
+
+# We then make a bug fix to the model code and commit it to the repository with a message indicating the nature of the fix.
+
+# Finally, we tag the latest version of the model as "production" to indicate that this version is ready for deployment. This tag can be used to easily identify the version of the model that is currently in production.
