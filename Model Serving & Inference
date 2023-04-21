@@ -1,0 +1,40 @@
+# Model serving and inference are two important concepts in MLOps (Machine Learning Operations).
+
+# Model serving refers to the process of making a trained machine learning model available for use by other software applications, typically through an API (Application Programming Interface). This involves setting up an infrastructure to host the model, making it scalable, and ensuring that it is available and responsive to requests. Model serving is essential for deploying a model into production and enabling it to be used in real-world applications.
+
+# Inference, on the other hand, refers to the process of using a trained machine learning model to make predictions or decisions based on new data. In other words, it is the process of applying the model to input data to generate output data. Inference is an essential part of using machine learning models in real-world applications, and it requires a lot of computational resources, especially when dealing with large datasets.
+
+# In summary, model serving and inference are two important components of MLOps that involve deploying and using machine learning models in real-world applications.
+
+# Here is a simple code sample to demonstrate model serving and inference in MLOps using Python and the Flask framework:
+# Import necessary libraries
+import numpy as np
+import joblib
+from flask import Flask, jsonify, request
+
+# Load the trained model
+model = joblib.load('model.pkl')
+
+# Create a Flask app
+app = Flask(__name__)
+
+# Define an endpoint for model inference
+@app.route('/predict', methods=['POST'])
+def predict():
+    # Get the input data
+    data = request.get_json()
+    input_data = np.array(data['input'])
+    
+    # Use the model to make predictions
+    predictions = model.predict(input_data)
+    
+    # Return the predictions as a JSON response
+    return jsonify({'predictions': predictions.tolist()})
+
+# Start the app
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
+
+# In this code sample, we first load a trained machine learning model using the joblib library. Then we create a Flask app and define an endpoint for model inference at the /predict route. When a POST request is sent to this endpoint with input data in JSON format, the code converts the data into a NumPy array, uses the loaded model to make predictions on this data, and returns the predictions as a JSON response.
+
+# Finally, we start the Flask app on the local host at port 5000. This code can be deployed to a production server and used to serve predictions from the trained model to other software applications.
