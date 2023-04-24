@@ -1,0 +1,71 @@
+# Cloud-native technologies refer to a set of principles and practices used to build and deploy applications in cloud environments, such as public or private clouds. These technologies leverage the benefits of cloud computing, such as scalability, high availability, and resilience, to deliver applications that are highly efficient and reliable.
+
+# In the context of MLOps (Machine Learning Operations), cloud-native technologies are used to build and deploy machine learning models in a cloud environment. This involves leveraging technologies such as containers, Kubernetes, serverless computing, and microservices to create an infrastructure that is highly automated, scalable, and flexible.
+
+# Cloud-native technologies allow MLOps teams to quickly provision resources, automate the deployment of machine learning models, and scale resources up or down as needed. By adopting cloud-native technologies, MLOps teams can focus on developing and deploying machine learning models, rather than managing infrastructure, which can lead to faster development cycles, greater agility, and lower costs.
+
+# Here is an example of how cloud-native technologies can be used in MLOps to deploy a machine learning model:
+# Building a Docker container:
+FROM python:3.8
+
+COPY requirements.txt /app/requirements.txt
+
+WORKDIR /app
+
+RUN pip install -r requirements.txt
+
+COPY . /app
+
+CMD ["python", "app.py"]
+
+# In this example, we are using Docker to build a container that will run our machine learning model. The Docker container includes the required dependencies and runs a Python script named app.py.
+
+# Defining the Kubernetes deployment:
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-model-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-model
+  template:
+    metadata:
+      labels:
+        app: my-model
+    spec:
+      containers:
+      - name: my-model-container
+        image: my-model-image:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: MODEL_VERSION
+          value: v1
+
+# This Kubernetes deployment defines how our machine learning model will be deployed to the cloud environment. We are specifying that we want to run three replicas of our model container and exposing port 80 to the outside world. We are also setting an environment variable MODEL_VERSION to v1.
+
+# Creating a serverless endpoint:
+import json
+import boto3
+
+def lambda_handler(event, context):
+    payload = json.loads(event['body'])
+    model_version = payload.get('model_version', 'v1')
+    sagemaker_client = boto3.client('sagemaker-runtime')
+    response = sagemaker_client.invoke_endpoint(
+        EndpointName='my-model-endpoint',
+        ContentType='application/json',
+        Body=json.dumps(payload),
+        CustomAttributes='model_version=' + model_version
+    )
+    result = json.loads(response['Body'].read().decode())
+    return {
+        'statusCode': 200,
+        'body': json.dumps(result)
+    }
+
+# In this example, we are using AWS Lambda to create a serverless endpoint for our machine learning model. The lambda_handler function takes a request payload, which includes the input data for the model, and invokes the SageMaker endpoint with the payload. We are also allowing the user to specify a model version as part of the payload, which allows us to deploy multiple versions of the model and choose which version to use at runtime.
+
+# These are just a few examples of how cloud-native technologies can be used in MLOps to deploy machine learning models in a cloud environment. By leveraging technologies such as Docker, Kubernetes, and serverless computing, MLOps teams can create highly scalable and efficient infrastructure for deploying machine learning models.
