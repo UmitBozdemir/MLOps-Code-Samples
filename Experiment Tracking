@@ -1,0 +1,30 @@
+# Experiment tracking in MLOps (Machine Learning Operations) refers to the process of recording and managing all the details of machine learning experiments performed during the model development process.
+
+# This includes tracking the hyperparameters, dataset used, code versions, evaluation metrics, and other relevant information. Experiment tracking enables teams to compare and reproduce experiments and models, share knowledge and insights, and make better decisions during the development and deployment of ML models.
+
+# Experiment tracking platforms or tools, such as MLflow, TensorBoard, or Neptune, provide a centralized repository to store and manage the metadata related to each experiment, including logs, results, and artifacts. They also offer visualizations, collaboration features, and integration with other tools in the MLOps pipeline, such as model version control systems or model deployment platforms.
+
+# Here's a Python code sample for experiment tracking using MLflow, one of the popular experiment tracking tools in MLOps:
+import mlflow
+
+# Start a new MLflow experiment
+mlflow.set_experiment("my_experiment")
+
+# Start a new run within the experiment
+with mlflow.start_run():
+    # Log hyperparameters
+    mlflow.log_param("learning_rate", 0.01)
+    mlflow.log_param("batch_size", 64)
+    
+    # Train model and log evaluation metrics
+    model = train_model(...)
+    accuracy = evaluate_model(model)
+    mlflow.log_metric("accuracy", accuracy)
+    
+    # Log artifacts such as model weights or images
+    mlflow.log_artifact("model.h5")
+    mlflow.log_artifact("visualization.png")
+
+# In this example, we start a new experiment named "my_experiment" using mlflow.set_experiment. We then start a new run within the experiment using mlflow.start_run. We log the hyperparameters using mlflow.log_param, train the model, and log evaluation metrics such as accuracy using mlflow.log_metric. Finally, we log the artifacts using mlflow.log_artifact, which could be model weights or visualizations.
+
+# With this code, MLflow will automatically log all the details of the experiment, including the code version, timestamp, and environment, and store them in a centralized location for easy tracking and comparison with other experiments.
