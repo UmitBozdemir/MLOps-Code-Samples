@@ -1,0 +1,72 @@
+# Model catalog management is a key component of MLOps (Machine Learning Operations) that refers to the process of organizing, storing, and managing machine learning models in a centralized repository or catalog. It involves the creation of a centralized database or registry that houses all the machine learning models created by data scientists in an organization.
+
+# The model catalog provides a single source of truth for all the machine learning models, making it easy for data scientists, engineers, and other stakeholders to access, update, and deploy models. It also enables organizations to keep track of the performance and usage of the models, ensuring that they are up-to-date and relevant.
+
+# Some of the key features of model catalog management in MLOps include version control, metadata management, model testing and validation, and model deployment. Version control ensures that different versions of the same model are saved and tracked, allowing data scientists to easily compare and evaluate different models. Metadata management involves storing information about the model, such as its name, description, author, and performance metrics.
+
+# Model testing and validation ensure that the model is accurate and effective in its intended use case. Finally, model deployment involves making the model available for use in production environments, such as mobile apps or web applications. By effectively managing the model catalog, organizations can improve the efficiency and effectiveness of their machine learning workflows, resulting in more accurate and effective models.
+
+# Here's an example code sample for model catalog management in MLOps using MLflow and AWS S3:
+import mlflow
+import boto3
+from botocore.exceptions import ClientError
+
+# Set up AWS S3 client
+s3 = boto3.client('s3')
+
+# Set up MLflow tracking server and artifact storage in S3
+mlflow.set_tracking_uri('s3://my-bucket/mlflow')
+mlflow.set_registry_uri('s3://my-bucket/mlflow')
+
+# Define function to create or update model in MLflow
+def create_or_update_model(model_name, model_path, run_id):
+    try:
+        # Check if model already exists in MLflow
+        model_version = mlflow.get_model_version(model_name, run_id)
+        print(f"Model {model_name} already exists with version {model_version.version}")
+        
+        # Update model with new path
+        mlflow.update_registered_model(model_name, model_path)
+        print(f"Model {model_name} updated with new path {model_path}")
+    except mlflow.exceptions.RestException as e:
+        # If model doesn't exist, create it
+        if "RESOURCE_DOES_NOT_EXIST" in str(e):
+            mlflow.register_model(model_path, model_name)
+            print(f"Model {model_name} created with path {model_path}")
+            
+        # If there was another exception, raise it
+        else:
+            raise e
+
+# Define function to upload model artifacts to S3
+def upload_artifacts_to_s3(run_id):
+    try:
+        # Get model artifacts path from MLflow
+        artifacts_path = mlflow.get_run(run_id).info.artifact_uri
+        
+        # Upload artifacts to S3
+        for artifact in mlflow.list_artifacts(run_id):
+            artifact_path = f"{artifacts_path}/{artifact.path}"
+            s3.upload_file(artifact_path, 'my-bucket', f"mlflow/{run_id}/{artifact.path}")
+        
+        print(f"Artifacts for run {run_id} uploaded to S3")
+    except ClientError as e:
+        print(f"Error uploading artifacts to S3: {e}")
+
+# Example usage
+with mlflow.start_run():
+    # Train model and log metrics, parameters, and artifacts in MLflow
+    model_path = 'my-model'
+    mlflow.log_param('param1', 1)
+    mlflow.log_metric('metric1', 0.5)
+    mlflow.log_artifact('my-artifact.txt')
+    
+    # Create or update model in MLflow
+    model_name = 'my-model'
+    run_id = mlflow.active_run().info.run_id
+    create_or_update_model(model_name, model_path, run_id)
+    
+    # Upload artifacts to S3
+    upload_artifacts_to_s3(run_id)
+
+# This code creates or updates a model in MLflow based on the model name and path, and uploads the artifacts associated with a particular run to S3. Note that this code assumes you have already set up AWS credentials for the S3 client.
