@@ -1,0 +1,49 @@
+# Data drift monitoring and management in MLOps refers to the process of monitoring and managing changes in the distribution and quality of data used to train and deploy machine learning models. Data drift occurs when the statistical properties of the data used for training and testing a model change over time, causing the model's performance to degrade.
+
+# In MLOps, data drift monitoring and management involves regularly monitoring the performance of deployed models and comparing it with the expected performance based on historical data. If there is a significant deviation, the data drift can be detected and appropriate actions can be taken to retrain or update the model.
+
+# The goal of data drift monitoring and management is to ensure that machine learning models remain accurate and effective over time. This involves continuously monitoring the input data used by the model, and adjusting the model's parameters and algorithms as needed to adapt to changes in the data. Data drift monitoring and management is an essential part of building and maintaining robust, reliable machine learning systems in production.
+
+# Here's a code sample for data drift monitoring and management in MLOps using Python and scikit-learn library:
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
+from sklearn import preprocessing
+import pandas as pd
+
+# Load the iris dataset
+data = load_iris()
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(data.data, data.target, test_size=0.3, random_state=42)
+
+# Fit a random forest classifier on the training data
+clf = RandomForestClassifier()
+clf.fit(X_train, y_train)
+
+# Evaluate the model on the test data
+y_pred = clf.predict(X_test)
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy: ", accuracy)
+
+# Load new data for monitoring data drift
+new_data = pd.read_csv("new_data.csv")
+
+# Preprocess the new data using the same preprocessing as the original data
+scaler = preprocessing.StandardScaler().fit(data.data)
+new_data_scaled = scaler.transform(new_data)
+
+# Evaluate the model on the new data
+y_pred_new = clf.predict(new_data_scaled)
+accuracy_new = accuracy_score(new_data.target, y_pred_new)
+print("Accuracy on new data: ", accuracy_new)
+
+# Compare the performance on the new data with the expected performance
+if accuracy_new < accuracy - 0.05:
+    print("Warning: Data drift detected!")
+    # Take appropriate action, such as retraining the model or adjusting its parameters
+else:
+    print("No data drift detected.")
+
+# In this code sample, we first train a random forest classifier on the iris dataset and evaluate its performance on a test set. We then load new data for monitoring data drift, preprocess it using the same preprocessing as the original data, and evaluate the model's performance on the new data. Finally, we compare the performance on the new data with the expected performance based on the test set, and take appropriate action if a significant deviation is detected.
